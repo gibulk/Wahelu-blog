@@ -22,7 +22,7 @@ export function TippingButton() {
       
       // Kirim 0.001 ETH sebagai contoh
       const tx = await signer.sendTransaction({
-        to: SITE_CONFIG.cryptoAddress,
+        to: 0x7A92BfB2C934fC0c59c8beF75663cE76C9e2a44c,
         value: ethers.parseEther('0.001'),
       });
       
