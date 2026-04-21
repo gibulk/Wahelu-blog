@@ -1,8 +1,7 @@
-import type { Metadata } from 'next';
-import { Inter, Playfair_Display } from 'next/font/google';
 import './globals.css';
 import { Providers } from './providers';
 import { Toaster } from 'react-hot-toast';
+import { Inter, Playfair_Display } from 'next/font/google';
 
 const inter = Inter({
   subsets: ['latin'],
@@ -13,14 +12,6 @@ const playfair = Playfair_Display({
   subsets: ['latin'],
   variable: '--font-playfair',
 });
-
-export const metadata: Metadata = {
-  title: {
-    template: '%s | Wahelu',
-    default: 'Wahelu - Analisis Geopolitik & Web3',
-  },
-  description: 'Analisis mendalam dinamika global, konflik perbatasan, dan persimpangan dengan ekosistem Web3.',
-};
 
 export default function RootLayout({
   children,
