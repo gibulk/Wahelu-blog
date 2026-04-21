@@ -1,4 +1,3 @@
-
 'use client';
 
 import { useForm } from 'react-hook-form';
@@ -10,7 +9,7 @@ import { CATEGORIES } from '@/lib/constants';
 import { slugify } from '@/lib/utils';
 import { useState } from 'react';
 import dynamic from 'next/dynamic';
-import { useSupabaseClient } from '@supabase/auth-helpers-react';
+import { useSession } from '@/app/providers';
 import toast from 'react-hot-toast';
 import { useRouter } from 'next/navigation';
 import type { Article } from '@/types';
@@ -35,16 +34,10 @@ interface ArticleFormProps {
 export function ArticleForm({ initialData }: ArticleFormProps) {
   const [uploading, setUploading] = useState(false);
   const [content, setContent] = useState(initialData?.content || '');
-  const supabase = useSupabaseClient();
+  const { supabase } = useSession();
   const router = useRouter();
 
-  const {
-    register,
-    handleSubmit,
-    setValue,
-    watch,
-    formState: { errors, isSubmitting },
-  } = useForm<FormData>({
+  const { register, handleSubmit, setValue, watch, formState: { errors, isSubmitting } } = useForm<FormData>({
     resolver: zodResolver(articleSchema),
     defaultValues: {
       title: initialData?.title || '',
@@ -64,11 +57,8 @@ export function ArticleForm({ initialData }: ArticleFormProps) {
     try {
       const fileExt = file.name.split('.').pop();
       const fileName = `${Date.now()}.${fileExt}`;
-      const { error } = await supabase.storage
-        .from('article-images')
-        .upload(fileName, file);
+      const { error } = await supabase.storage.from('article-images').upload(fileName, file);
       if (error) throw error;
-
       const { data } = supabase.storage.from('article-images').getPublicUrl(fileName);
       setValue('cover_image', data.publicUrl);
     } catch (error) {
@@ -80,19 +70,11 @@ export function ArticleForm({ initialData }: ArticleFormProps) {
 
   const onSubmit = async (data: FormData) => {
     const slug = slugify(data.title);
-    const payload = {
-      ...data,
-      content,
-      slug,
-      published_at: data.published ? new Date().toISOString() : null,
-    };
+    const payload = { ...data, content, slug, published_at: data.published ? new Date().toISOString() : null };
 
     try {
       if (initialData) {
-        const { error } = await supabase
-          .from('articles')
-          .update(payload)
-          .eq('id', initialData.id);
+        const { error } = await supabase.from('articles').update(payload).eq('id', initialData.id);
         if (error) throw error;
         toast.success('Artikel diperbarui');
       } else {
@@ -114,53 +96,38 @@ export function ArticleForm({ initialData }: ArticleFormProps) {
         <Input {...register('title')} />
         {errors.title && <p className="text-red-500 text-sm">{errors.title.message}</p>}
       </div>
-
       <div>
         <label className="block text-sm font-medium mb-1">Kutipan Singkat</label>
         <Input {...register('excerpt')} />
       </div>
-
       <div>
         <label className="block text-sm font-medium mb-1">Kategori</label>
-        <select
-          {...register('category')}
-          className="w-full rounded-md border border-input bg-background px-3 py-2"
-        >
+        <select {...register('category')} className="w-full rounded-md border border-input bg-background px-3 py-2">
           {CATEGORIES.map((cat) => (
-            <option key={cat.value} value={cat.value}>
-              {cat.label}
-            </option>
+            <option key={cat.value} value={cat.value}>{cat.label}</option>
           ))}
         </select>
       </div>
-
       <div>
         <label className="block text-sm font-medium mb-1">Gambar Sampul</label>
         <Input type="file" accept="image/*" onChange={handleImageUpload} disabled={uploading} />
-        {coverImage && (
-          <img src={coverImage} alt="Preview" className="mt-2 h-32 object-cover rounded" />
-        )}
+        {coverImage && <img src={coverImage} alt="Preview" className="mt-2 h-32 object-cover rounded" />}
       </div>
-
       <div>
         <label className="block text-sm font-medium mb-1">Konten (Markdown)</label>
         <MDEditor value={content} onChange={(val) => setContent(val || '')} height={400} />
         {errors.content && <p className="text-red-500 text-sm">{errors.content.message}</p>}
       </div>
-
       <div className="flex items-center gap-2">
         <input type="checkbox" id="published" {...register('published')} />
         <label htmlFor="published">Publikasikan</label>
       </div>
-
       <div className="flex gap-2">
         <Button type="submit" disabled={isSubmitting}>
           {isSubmitting ? 'Menyimpan...' : initialData ? 'Update' : 'Simpan'}
         </Button>
-        <Button type="button" variant="outline" onClick={() => router.back()}>
-          Batal
-        </Button>
+        <Button type="button" variant="outline" onClick={() => router.back()}>Batal</Button>
       </div>
     </form>
   );
-        }
+      }
