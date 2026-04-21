@@ -13,11 +13,7 @@ export function ThemeToggle() {
   if (!mounted) return null;
 
   return (
-    <Button
-      variant="ghost"
-      size="sm"
-      onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
-    >
+    <Button variant="ghost" size="sm" onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}>
       {theme === 'dark' ? '☀️' : '🌙'}
       <span className="sr-only">Toggle theme</span>
     </Button>
