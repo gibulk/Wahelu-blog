@@ -4,13 +4,12 @@ import type { Article } from '@/types';
 import Link from 'next/link';
 import { Button } from '../ui/Button';
 import { formatDate } from '@/lib/utils';
-import { Pencil, Trash2 } from 'lucide-react';
-import { useSupabaseClient } from '@supabase/auth-helpers-react';
+import { useSession } from '@/app/providers';
 import toast from 'react-hot-toast';
 import { useRouter } from 'next/navigation';
 
 export function ArticleTable({ articles }: { articles: Article[] }) {
-  const supabase = useSupabaseClient();
+  const { supabase } = useSession();
   const router = useRouter();
 
   const handleDelete = async (id: string) => {
@@ -51,11 +50,11 @@ export function ArticleTable({ articles }: { articles: Article[] }) {
                 <div className="flex justify-end gap-2">
                   <Button size="sm" variant="ghost" asChild>
                     <Link href={`/admin/dashboard/articles/${article.id}/edit`}>
-                      <Pencil className="h-4 w-4" />
+                      <span>✏️</span>
                     </Link>
                   </Button>
                   <Button size="sm" variant="ghost" onClick={() => handleDelete(article.id)}>
-                    <Trash2 className="h-4 w-4" />
+                    <span>🗑️</span>
                   </Button>
                 </div>
               </td>
