@@ -7,14 +7,9 @@ import { Button } from '../ui/Button';
 import { useSession } from '@/app/providers';
 import toast from 'react-hot-toast';
 
-// Icon sederhana tanpa lucide-react
-const HomeIcon = () => <span className="mr-2">🏠</span>;
-const FileIcon = () => <span className="mr-2">📄</span>;
-const LogoutIcon = () => <span className="mr-2">🚪</span>;
-
 const navItems = [
-  { href: '/admin/dashboard', label: 'Dashboard', icon: HomeIcon },
-  { href: '/admin/dashboard/articles', label: 'Artikel', icon: FileIcon },
+  { href: '/admin/dashboard', label: 'Dashboard', icon: '🏠' },
+  { href: '/admin/dashboard/articles', label: 'Artikel', icon: '📄' },
 ];
 
 export function AdminSidebar() {
@@ -35,23 +30,17 @@ export function AdminSidebar() {
         <h2 className="font-serif text-2xl font-bold">Wahelu Admin</h2>
       </div>
       <nav className="flex-1 space-y-2">
-        {navItems.map((item) => {
-          const Icon = item.icon;
-          return (
-            <Link key={item.href} href={item.href}>
-              <Button
-                variant={pathname === item.href ? 'default' : 'ghost'}
-                className="w-full justify-start"
-              >
-                <Icon />
-                {item.label}
-              </Button>
-            </Link>
-          );
-        })}
+        {navItems.map((item) => (
+          <Link key={item.href} href={item.href}>
+            <Button variant={pathname === item.href ? 'default' : 'ghost'} className="w-full justify-start">
+              <span className="mr-2">{item.icon}</span>
+              {item.label}
+            </Button>
+          </Link>
+        ))}
       </nav>
       <Button variant="outline" onClick={handleLogout} className="justify-start">
-        <LogoutIcon />
+        <span className="mr-2">🚪</span>
         Logout
       </Button>
     </aside>
