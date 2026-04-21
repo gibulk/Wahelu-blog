@@ -1,19 +1,19 @@
 'use client';
 
 import { useState } from 'react';
-import { useSupabaseClient } from '@supabase/auth-helpers-react';
 import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/Card';
 import toast from 'react-hot-toast';
+import { createClient } from '@/lib/supabase/client';
 
 export default function AdminLoginPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
-  const supabase = useSupabaseClient();
   const router = useRouter();
+  const supabase = createClient();
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -24,9 +24,11 @@ export default function AdminLoginPage() {
         password,
       });
       if (error) throw error;
+      toast.success('Login berhasil!');
       router.push('/admin/dashboard');
+      router.refresh();
     } catch (error: any) {
-      toast.error(error.message);
+      toast.error(error.message || 'Login gagal');
     } finally {
       setLoading(false);
     }
