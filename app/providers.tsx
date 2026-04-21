@@ -2,12 +2,9 @@
 
 import { ThemeProvider } from 'next-themes';
 import { createClient } from '@/lib/supabase/client';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, createContext, useContext } from 'react';
 import { useRouter } from 'next/navigation';
 import { Session, SupabaseClient } from '@supabase/supabase-js';
-
-// Context sederhana untuk session
-import { createContext, useContext } from 'react';
 
 type SessionContextType = {
   session: Session | null;
@@ -35,14 +32,11 @@ function SessionProvider({ children }: { children: React.ReactNode }) {
       setSession(session);
       setLoading(false);
     };
-
     getSession();
-
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
       setSession(session);
       router.refresh();
     });
-
     return () => subscription.unsubscribe();
   }, [supabase, router]);
 
