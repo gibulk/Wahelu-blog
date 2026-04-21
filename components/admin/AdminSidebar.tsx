@@ -1,26 +1,32 @@
 'use client';
 
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { cn } from '@/lib/utils';
 import { Button } from '../ui/Button';
-import { FileText, Home, LogOut } from 'lucide-react';
-import { useSupabaseClient } from '@supabase/auth-helpers-react';
-import { useRouter } from 'next/navigation';
+import { useSession } from '@/app/providers';
+import toast from 'react-hot-toast';
+
+// Icon sederhana tanpa lucide-react
+const HomeIcon = () => <span className="mr-2">🏠</span>;
+const FileIcon = () => <span className="mr-2">📄</span>;
+const LogoutIcon = () => <span className="mr-2">🚪</span>;
 
 const navItems = [
-  { href: '/admin/dashboard', label: 'Dashboard', icon: Home },
-  { href: '/admin/dashboard/articles', label: 'Artikel', icon: FileText },
+  { href: '/admin/dashboard', label: 'Dashboard', icon: HomeIcon },
+  { href: '/admin/dashboard/articles', label: 'Artikel', icon: FileIcon },
 ];
 
 export function AdminSidebar() {
   const pathname = usePathname();
-  const supabase = useSupabaseClient();
   const router = useRouter();
+  const { supabase } = useSession();
 
   const handleLogout = async () => {
     await supabase.auth.signOut();
+    toast.success('Logout berhasil');
     router.push('/admin/login');
+    router.refresh();
   };
 
   return (
@@ -37,7 +43,7 @@ export function AdminSidebar() {
                 variant={pathname === item.href ? 'default' : 'ghost'}
                 className="w-full justify-start"
               >
-                <Icon className="mr-2 h-4 w-4" />
+                <Icon />
                 {item.label}
               </Button>
             </Link>
@@ -45,7 +51,7 @@ export function AdminSidebar() {
         })}
       </nav>
       <Button variant="outline" onClick={handleLogout} className="justify-start">
-        <LogOut className="mr-2 h-4 w-4" />
+        <LogoutIcon />
         Logout
       </Button>
     </aside>
