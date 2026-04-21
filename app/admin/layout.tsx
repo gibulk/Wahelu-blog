@@ -22,9 +22,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     );
   }
 
-  if (!session) {
-    return null;
-  }
+  if (!session) return null;
 
   return <>{children}</>;
 }
