@@ -20,6 +20,9 @@ export const metadata: Metadata = {
     default: 'Wahelu - Analisis Geopolitik & Web3',
   },
   description: 'Analisis mendalam dinamika global, konflik perbatasan, dan persimpangan dengan ekosistem Web3.',
+  icons: {
+    icon: '/favicon.ico',
+  },
 };
 
 export default function RootLayout({
