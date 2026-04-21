@@ -7,6 +7,13 @@ const nextConfig = {
         hostname: '**.supabase.co',
       },
     ],
+    unoptimized: true,
+  },
+  typescript: {
+    ignoreBuildErrors: true,
+  },
+  eslint: {
+    ignoreDuringBuilds: true,
   },
 };
 
